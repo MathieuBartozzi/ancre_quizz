@@ -244,6 +244,10 @@ elif not st.session_state.show_results_button:
 # Afficher le bouton "Afficher les résultats" une fois le questionnaire terminé
 elif st.session_state.show_results_button:
     st.write("Vous avez terminé le test. Cliquez sur le bouton ci-dessous pour afficher vos résultats.")
+
+    # Afficher les ballons
+    st.balloons()
+
     if st.button("Afficher les résultats"):
         st.session_state.show_results = True
         st.rerun()
