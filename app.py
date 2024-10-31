@@ -436,15 +436,15 @@ def display_results():
             ["CAU", "VIE", "INTER"]
         ]
         descriptions = {
-            "TECH": "L’ancre technique. Votre carrière s’organise autour d’un métier spécifique. Vous souhaitez devenir un expert dans votre domaine et acquérir sans cesse de nouvelles compétences pour vous perfectionner.",
-            "MG": "L’ancre managériale. Votre carrière est orientée vers les postes de direction. Vous envisagez de changer de poste régulièrement pour franchir les étapes et vous rapprocher du sommet de la hiérarchie.",
-            "AUT": "L’ancre autonomie. Votre carrière repose sur un besoin d’indépendance et d’autonomie. Vous cherchez avant tout à être libre dans vos décisions professionnelles et pourriez même quitter votre entreprise pour vous concentrer sur des projets personnels.",
-            "SEC": "L’ancre sécurité-stabilité. Votre carrière est orientée vers une zone de confort. Vous êtes peu susceptible d’accepter un changement de poste ou une mobilité géographique.",
-            "CRE": "L’ancre créativité. Votre carrière est fondée avant tout sur le besoin de créer. Vous préférez vous tourner vers des entreprises innovantes et pourriez envisager de lancer votre propre activité.",
-            "CAU": "L’ancre dévouement. Votre carrière s’oriente vers une activité perçue comme une cause, par exemple travailler pour une entreprise alignée avec vos centres d’intérêt.",
-            "DEF": "L’ancre défi. Votre carrière est définie par la nécessité de vous confronter à des obstacles pour les dépasser, comme partir à l’étranger ou changer de secteur.",
-            "VIE": "L’ancre style de vie. Votre carrière est centrée sur la recherche de la qualité de vie. L’équilibre entre vie privée et vie professionnelle est primordial pour vous.",
-            "INTER": "L’ancre internationale. Votre carrière est tournée vers la mobilité à l’international, plaçant l’étranger et la découverte de nouvelles cultures au cœur de votre projet professionnel."
+            "TECH": "**L’ancre technique**. Votre carrière s’organise autour d’un métier spécifique. Vous souhaitez devenir un expert dans votre domaine et acquérir sans cesse de nouvelles compétences pour vous perfectionner.",
+            "MG": "**L’ancre managériale**. Votre carrière est orientée vers les postes de direction. Vous envisagez de changer de poste régulièrement pour franchir les étapes et vous rapprocher du sommet de la hiérarchie.",
+            "AUT": "**L’ancre autonomie**. Votre carrière repose sur un besoin d’indépendance et d’autonomie. Vous cherchez avant tout à être libre dans vos décisions professionnelles et pourriez même quitter votre entreprise pour vous concentrer sur des projets personnels.",
+            "SEC": "**L’ancre sécurité-stabilité**. Votre carrière est orientée vers une zone de confort. Vous êtes peu susceptible d’accepter un changement de poste ou une mobilité géographique.",
+            "CRE": "**L’ancre créativité**. Votre carrière est fondée avant tout sur le besoin de créer. Vous préférez vous tourner vers des entreprises innovantes et pourriez envisager de lancer votre propre activité.",
+            "CAU": "**L’ancre dévouement**. Votre carrière s’oriente vers une activité perçue comme une cause, par exemple travailler pour une entreprise alignée avec vos centres d’intérêt.",
+            "DEF": "**L’ancre défi**. Votre carrière est définie par la nécessité de vous confronter à des obstacles pour les dépasser, comme partir à l’étranger ou changer de secteur.",
+            "VIE": "**L’ancre style de vie**. Votre carrière est centrée sur la recherche de la qualité de vie. L’équilibre entre vie privée et vie professionnelle est primordial pour vous.",
+            "INTER": "**L’ancre internationale**. Votre carrière est tournée vers la mobilité à l’international, plaçant l’étranger et la découverte de nouvelles cultures au cœur de votre projet professionnel."
             }
 
         for row in rows:
