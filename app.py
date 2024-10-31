@@ -401,19 +401,19 @@ def display_top_propositions_selection():
     top_propositions = sorted(response_scores, key=lambda x: x[1], reverse=True)[:10]
 
     st.write("Sélectionnez 3 propositions parmi celles qui ont les scores les plus élevés et avec lesquelles vous êtes le plus en accord :")
+    with st.container(border=True):
+        selected = []
+        for i, (prop_index, score) in enumerate(top_propositions):
+            if st.checkbox(f"Proposition {prop_index}: {propositions[prop_index - 1]} (Score: {score})", key=f"top_{i}"):
+                selected.append(prop_index)
 
-    selected = []
-    for i, (prop_index, score) in enumerate(top_propositions):
-        if st.checkbox(f"Proposition {prop_index}: {propositions[prop_index - 1]} (Score: {score})", key=f"top_{i}"):
-            selected.append(prop_index)
-
-    if len(selected) == 3:
-        if st.button("Valider la sélection"):
-            st.session_state.selected_top_propositions = selected
-            st.session_state.top_propositions_selected = True
-            st.rerun()
-    elif len(selected) > 3:
-        st.warning("Veuillez sélectionner uniquement 3 propositions.")
+        if len(selected) == 3:
+            if st.button("Valider la sélection"):
+                st.session_state.selected_top_propositions = selected
+                st.session_state.top_propositions_selected = True
+                st.rerun()
+        elif len(selected) > 3:
+            st.warning("Veuillez sélectionner uniquement 3 propositions.")
 
 # Afficher la page des résultats avec les descriptions et options de téléchargement
 def display_results():
