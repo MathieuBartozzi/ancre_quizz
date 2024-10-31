@@ -97,7 +97,7 @@ elif st.session_state.show_results and st.session_state.top_propositions_selecte
     sns.barplot(x="Score", y="Ancre", data=scores_df, palette="crest")
 
     #enleve le cadre
-    sns.despine
+    sns.despine()
 
     # Ajouter un titre et afficher le graphique
     plt.xlabel("Score")
@@ -109,7 +109,7 @@ elif st.session_state.show_results and st.session_state.top_propositions_selecte
     with st.container(border=True):
 
         # Explication globale
-        st.write("### Comprendre vos ancres de carrière")
+        st.subheader("Comprendre vos ancres de carrière")
         st.write("""
         Les ancres de carrière reflètent les motivations et les valeurs profondes qui guident vos choix professionnels.
         Elles vous aident à identifier ce qui est le plus important pour vous dans votre parcours professionnel.
