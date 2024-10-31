@@ -360,7 +360,7 @@ def display_intro():
 
     st.write("Vous souhaitez découvrir ce qui vous motive vraiment ? Installez vous confortablement ☕️ et cliquez ci-dessous pour débuter le test.")
 
-    if st.button("Commencer le test"):
+    if st.button("Commencer le test",type="primary"):
         st.session_state.test_started = True
         st.rerun()
 
