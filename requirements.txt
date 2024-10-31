@@ -1,4 +1,5 @@
 streamlit
-plotly
 pandas
 kaleido  # Nécessaire pour exporter les graphiques Plotly en PNG
+seaborn
+mathplotlib
