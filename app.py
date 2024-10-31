@@ -2,8 +2,9 @@ import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
 from io import BytesIO
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-# st.set_page_config(layout="wide")
 
 # Charger les propositions depuis le fichier 'propositions.txt'
 def load_propositions(file_path="propositions.txt"):
@@ -56,7 +57,7 @@ def calculate_scores(selected_propositions=None):
 
     return scores
 
-# Trier les scores du meilleur au plus faible
+# Calculer les scores et les trier du meilleur au plus faible
 scores = calculate_scores(selected_propositions=st.session_state.selected_top_propositions)
 sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=False)
 labels, values = zip(*sorted_scores)  # Séparer les étiquettes et les valeurs pour l'affichage
@@ -85,71 +86,93 @@ if not st.session_state.test_started:
 
 # Afficher les résultats une fois le questionnaire terminé et après la sélection
 elif st.session_state.show_results and st.session_state.top_propositions_selected:
+
+    st.title("Vos résultats 👀")
     # Calcul des scores pour les ancres de carrière avec les propositions sélectionnées
     scores = calculate_scores(st.session_state.selected_top_propositions)
+    scores_df = pd.DataFrame(sorted_scores, columns=["Ancre", "Score"])
 
-    # Afficher les scores sous forme de graphique en barres
-    st.title("Résultats de vos ancres de carrière")
-    fig = go.Figure(go.Bar(
-    x=values,
-    y=labels,
-    orientation='h',
-    marker=dict(
-        color=values,
-        colorscale="Viridis",
-        colorbar=dict(title="Scores"),
-        cmin=min(values),  # Limite inférieure de l'échelle de couleurs
-        cmax=max(values)   # Limite supérieure de l'échelle de couleurs
-    )
-    ))
+    # Créer un graphique en barres horizontal
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x="Score", y="Ancre", data=scores_df, palette="crest")
 
-    st.plotly_chart(fig)
+    # Ajouter un titre et afficher le graphique
+    plt.title("Résultats de vos ancres de carrière")
+    plt.xlabel("Score")
+    plt.ylabel("Ancre")
+    st.pyplot(plt)  # Afficher le graphique dans Streamlit
 
 
-    # Introduction explicative pour les ancres avec un seul expander en 3 colonnes de 3 lignes
-    with st.expander("Comprendre vos ancres de carrière"):
+
+# Conteneur avec bordures pour le bloc des ancres de carrière
+    with st.container(border=True):
+
+        # Explication globale
+        st.write("### Comprendre vos ancres de carrière")
         st.write("""
         Les ancres de carrière reflètent les motivations et les valeurs profondes qui guident vos choix professionnels.
         Elles vous aident à identifier ce qui est le plus important pour vous dans votre parcours professionnel.
         """)
 
-        # Créer les trois colonnes
-        col1, col2, col3 = st.columns(3)
+        # Structure des lignes pour afficher les ancres avec des préfixes en gras
+        rows = [
+            ["TECH", "MG", "AUT"],
+            ["SEC", "CRE", "DEF"],
+            ["CAU", "VIE", "INTER"]
+        ]
 
-        # Placer les descriptions dans les colonnes
-        with col1:
-            st.write("**L’ancre technique** : La carrière s’organise autour d’un métier spécifique. Le salarié souhaite devenir un expert dans son domaine et acquérir sans cesse de nouvelles compétences pour se perfectionner.")
-            st.write("**L’ancre managériale** : La carrière est dirigée vers les postes de direction. Le salarié entend changer de poste régulièrement et franchir les étapes les unes après les autres pour se rapprocher du sommet de la hiérarchie.")
-            st.write("**L’ancre autonomie** : La carrière s’appuie sur un besoin d’indépendance et d’autonomie. Le salarié cherche avant tout à être libre dans ses décisions professionnelles, et peut quitter l’entreprise pour se concentrer sur des projets personnels.")
+        # Descriptions des ancres
+        descriptions = {
+            "TECH": "L’ancre technique : La carrière s’organise autour d’un métier spécifique. Le salarié souhaite devenir un expert dans son domaine et acquérir sans cesse de nouvelles compétences pour se perfectionner.",
+            "MG": "L’ancre managériale : La carrière est dirigée vers les postes de direction. Le salarié entend changer de poste régulièrement et franchir les étapes les unes après les autres pour se rapprocher du sommet de la hiérarchie.",
+            "AUT": "L’ancre autonomie : La carrière s’appuie sur un besoin d’indépendance et d’autonomie. Le salarié cherche avant tout à être libre dans ses décisions professionnelles, et peut quitter l’entreprise pour se concentrer sur des projets personnels.",
+            "SEC": "L’ancre sécurité-stabilité : La carrière est orientée vers une zone de confort. Le salarié est peu susceptible d’accepter un changement de poste ou une mobilité géographique.",
+            "CRE": "L’ancre créativité : La carrière est fondée avant tout sur le besoin de créer. Le salarié préfère se tourner vers des entreprises innovantes et est susceptible de lancer sa propre activité.",
+            "CAU": "L’ancre devouement : La carrière s’oriente sur une activité perçue comme une cause, par exemple travailler pour une entreprise alignée avec ses centres d’intérêt.",
+            "DEF": "L’ancre défi : La carrière est définie par la nécessité de se confronter à des obstacles pour les dépasser, comme partir à l’étranger ou changer de secteur.",
+            "VIE": "L’ancre style de vie : La carrière est centrée sur la recherche de la qualité de vie. L'équilibre entre vie privée et professionnelle est primordial.",
+            "INTER": "La carrière est tournée vers la mobilité à l’international, plaçant l’étranger et la découverte de nouvelles cultures au cœur du projet professionnel."
+        }
 
-        with col2:
-            st.write("**L’ancre sécurité-stabilité** : La carrière est orientée vers une zone de confort. Le salarié est peu susceptible d’accepter un changement de poste ou une mobilité géographique.")
-            st.write("**L’ancre créativité** : La carrière est fondée avant tout sur le besoin de créer. Le salarié préfère se tourner vers des entreprises innovantes et est susceptible de lancer sa propre activité.")
-            st.write("**L’ancre dévouement** : La carrière s’oriente sur une activité perçue comme une cause, par exemple travailler pour une entreprise alignée avec ses centres d’intérêt.")
+        # Création de l'affichage en 3 lignes avec 3 colonnes
+        for row in rows:
+            col1, col2, col3 = st.columns(3)
 
-        with col3:
-            st.write("**L’ancre défi** : La carrière est définie par la nécessité de se confronter à des obstacles pour les dépasser, comme partir à l’étranger ou changer de secteur.")
-            st.write("**L’ancre style de vie** : La carrière est centrée sur la recherche de la qualité de vie. L'équilibre entre vie privée et professionnelle est primordial.")
-            st.write("**L’ancre internationale** : La carrière est tournée vers la mobilité à l’international, plaçant l’étranger et la découverte de nouvelles cultures au cœur du projet professionnel.")
+            with col1:
+                ancre = row[0]
+                with st.popover(ancre):
+                    st.write(f"{descriptions[ancre]}")  # Affiche le préfixe en gras et la description
 
+            with col2:
+                ancre = row[1]
+                with st.popover(ancre):
+                    st.write(f"{descriptions[ancre]}")  # Affiche le préfixe en gras et la description
+
+            with col3:
+                ancre = row[2]
+                with st.popover(ancre):
+                    st.write(f"{descriptions[ancre]}")  # Affiche le préfixe en gras et la description
 
     # Aligner les boutons sur toute la largeur
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        # Fonction pour télécharger le graphique en PNG
+    # Créer un buffer pour sauvegarder l'image Seaborn
         img_buffer = BytesIO()
-        fig.write_image(img_buffer, format="png")
-        img_buffer.seek(0)  # Remettre le curseur au début du fichier pour le téléchargement
+
+        # Sauvegarder l'image Seaborn dans le buffer en format PNG
+        plt.savefig(img_buffer, format="png", bbox_inches="tight")
+        img_buffer.seek(0)  # Replacer le curseur au début du buffer pour le téléchargement
 
         # Bouton de téléchargement de l'image
         st.download_button(
             label="Télécharger l'image",
             data=img_buffer,
-            file_name="resultats_ancres_de_carriere.png",
+            file_name="resultats_ancres_de_carriere_seaborn.png",
             mime="image/png"
         )
+
 
     with col2:
         # Option de téléchargement du fichier CSV des scores
@@ -176,6 +199,7 @@ elif st.session_state.show_results and st.session_state.top_propositions_selecte
 
 # Sélection des 3 propositions parmi les 10 avec les plus hauts scores
 elif st.session_state.show_results_button and not st.session_state.top_propositions_selected:
+    st.title("Mes meilleures propositions ✨")
     # Récupérer les 10 propositions avec les scores les plus élevés
     response_scores = [(i+1, score) for i, score in enumerate(st.session_state.responses) if score is not None]
     top_propositions = sorted(response_scores, key=lambda x: x[1], reverse=True)[:10]
@@ -203,7 +227,7 @@ elif not st.session_state.show_results_button:
     progress = st.progress(st.session_state.current_proposition / len(propositions))
 
     # Créer le formulaire pour la proposition actuelle
-    st.title("Test en cours")
+    st.title("Test en cours 📝")
     with st.form("proposition_form"):
         proposition = propositions[st.session_state.current_proposition]
         st.write(f"Proposition {st.session_state.current_proposition + 1} : {proposition}")
