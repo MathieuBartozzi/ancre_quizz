@@ -96,10 +96,11 @@ elif st.session_state.show_results and st.session_state.top_propositions_selecte
     plt.figure(figsize=(10, 6))
     sns.barplot(x="Score", y="Ancre", data=scores_df, palette="crest")
 
+    #enleve le cadre
+    sns.despine
+
     # Ajouter un titre et afficher le graphique
-    plt.title("Résultats de vos ancres de carrière")
     plt.xlabel("Score")
-    plt.ylabel("Ancre")
     st.pyplot(plt)  # Afficher le graphique dans Streamlit
 
 
