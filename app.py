@@ -101,25 +101,53 @@ def display_intro():
         st.session_state.test_started = True
         st.rerun()
 
-# Afficher le questionnaire avec navigation
+
 def display_questionnaire(propositions):
-    progress = st.progress(st.session_state.current_proposition / len(propositions))
+    # Afficher la progression du test
+    progress = st.progress((st.session_state.current_proposition + 1) / len(propositions))
+
+    # Récupérer la question actuelle
     proposition = propositions[st.session_state.current_proposition]
     st.title("Test en cours 📝")
+
+    # Formulaire pour chaque question
     with st.form("proposition_form"):
         st.write(f"Proposition {st.session_state.current_proposition + 1} : {proposition}")
+
+        # Initialiser la réponse si elle n'existe pas
+        if f"response_{st.session_state.current_proposition}" not in st.session_state:
+            st.session_state[f"response_{st.session_state.current_proposition}"] = None
+
+        # Gérer l'index du bouton radio
+        if st.session_state[f"response_{st.session_state.current_proposition}"] is None:
+            response_index = 0  # Valeur par défaut sans sélection
+        else:
+            response_index = st.session_state[f"response_{st.session_state.current_proposition}"] - 1
+
+        # Créer le bouton radio avec l'index approprié
         response = st.radio(
             "Choisissez une réponse",
             [1, 2, 3, 4],
-            format_func=lambda x: ["Pas du tout d’accord", "Plutôt pas d’accord", "Plutôt d’accord", "Tout à fait d’accord"][x-1],
-            index=(st.session_state.responses[st.session_state.current_proposition] - 1) if st.session_state.responses[st.session_state.current_proposition] else 0
+            index=response_index,
+            format_func=lambda x: ["Pas du tout d’accord", "Plutôt pas d’accord", "Plutôt d’accord", "Tout à fait d’accord"][x - 1],
+            key=f"radio_{st.session_state.current_proposition}"  # Clé unique pour chaque question
         )
+
+        # Boutons de navigation
         col1, col2 = st.columns([1, 7])
         with col1:
             previous = st.form_submit_button("Préc.")
         with col2:
-            next = st.form_submit_button("Suiv.",type="primary")
-        st.session_state.responses[st.session_state.current_proposition] = response
+            next = st.form_submit_button("Suiv.", type="primary")
+
+        # Enregistrer la réponse pour la question actuelle
+        if response in [1, 2, 3, 4]:
+            st.session_state[f"response_{st.session_state.current_proposition}"] = response
+
+    # Mettre à jour la liste des réponses pour l'analyse des résultats
+    st.session_state.responses[st.session_state.current_proposition] = st.session_state[f"response_{st.session_state.current_proposition}"]
+
+    # Gérer la navigation entre les questions
     if previous and st.session_state.current_proposition > 0:
         st.session_state.current_proposition -= 1
         st.rerun()
@@ -130,6 +158,15 @@ def display_questionnaire(propositions):
         else:
             st.session_state.show_results_button = True
             st.rerun()
+
+
+
+
+
+
+
+
+
 
 # Afficher la sélection des propositions les plus élevées
 def display_top_propositions_selection():
