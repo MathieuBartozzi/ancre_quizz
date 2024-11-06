@@ -3,6 +3,8 @@ import pandas as pd
 from io import BytesIO
 import seaborn as sns
 import matplotlib.pyplot as plt
+import plotly.express as px
+
 
 # Charger les propositions depuis le fichier 'propositions.txt'
 def load_propositions(file_path="propositions.txt"):
@@ -28,16 +30,17 @@ def initialize_session_states(propositions):
 
 # Configurer les ancres de carrière et les indices associés
 career_anchors = {
-    "TECH": [1, 10, 19, 28, 37],
-    "MG": [2, 11, 20, 29, 38],
-    "AUT": [3, 12, 21, 30, 39],
-    "SEC": [4, 13, 22, 31, 40],
-    "CRE": [5, 14, 23, 32, 41],
-    "CAU": [6, 15, 24, 33, 42],
-    "DEF": [7, 16, 25, 34, 43],
-    "VIE": [8, 17, 26, 35, 44],
-    "INTER": [9, 18, 27, 36, 45],
+    "technique": [1, 10, 19, 28, 37],
+    "managériale": [2, 11, 20, 29, 38],
+    "autonomie": [3, 12, 21, 30, 39],
+    "sécurité-stabilité": [4, 13, 22, 31, 40],
+    "créativité": [5, 14, 23, 32, 41],
+    "dévouement": [6, 15, 24, 33, 42],
+    "défi": [7, 16, 25, 34, 43],
+    "style de vie": [8, 17, 26, 35, 44],
+    "internationale": [9, 18, 27, 36, 45],
 }
+
 
 # Calculer les scores pour chaque ancre
 def calculate_scores(selected_propositions=None):
@@ -53,16 +56,53 @@ def calculate_scores(selected_propositions=None):
                     scores[anchor] += 4
     return scores
 
-# Afficher les résultats sous forme de graphique classé
+# # Afficher les résultats sous forme de graphique classé
+# def display_sorted_results(scores):
+#     sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+#     scores_df = pd.DataFrame(sorted_scores, columns=["Ancre", "Score"])
+#     plt.figure(figsize=(10, 6))
+#     sns.barplot(x="Score", y="Ancre", data=scores_df, palette="crest")
+#     sns.despine()
+#     plt.xlabel("Score")
+#     st.pyplot(plt)
+#     return scores_df
+
+
+# Afficher les résultats sous forme de graphique classé avec Plotly
+import plotly.express as px
+
+# Afficher les résultats sous forme de graphique classé avec Plotly et palette de test de personnalité
 def display_sorted_results(scores):
+    # Trier les scores
     sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
     scores_df = pd.DataFrame(sorted_scores, columns=["Ancre", "Score"])
-    plt.figure(figsize=(10, 6))
-    sns.barplot(x="Score", y="Ancre", data=scores_df, palette="crest")
-    sns.despine()
-    plt.xlabel("Score")
-    st.pyplot(plt)
+
+    # Créer le graphique barplot avec Plotly et appliquer un dégradé de couleur basé sur le score
+    fig = px.bar(
+        scores_df,
+        x="Score",
+        y="Ancre",
+        orientation='h',
+        color="Score",  # Utiliser la colonne Score pour générer le dégradé
+        color_continuous_scale="Blugrn",  # Utiliser un dégradé de couleurs
+    )
+
+    # Personnaliser le style du graphique pour masquer les éléments non désirés
+    fig.update_layout(
+        showlegend=False,               # Masquer la légende
+        xaxis_title=None,               # Masquer le titre de l'axe des scores
+        yaxis_title=None,               # Masquer le titre de l'axe des ancres
+        coloraxis_showscale=False,
+        yaxis=dict(categoryorder="total ascending"),  # Trier les ancres par score
+        template="plotly_white"
+    )
+
+    # Afficher le graphique dans Streamlit
+    st.plotly_chart(fig)
+
     return scores_df
+
+
 
 # Afficher l'introduction et le bouton pour commencer le test
 def display_intro():
@@ -74,33 +114,31 @@ def display_intro():
     # Afficher le texte dans la première colonne
     with col1:
         st.write("""
-            Les **ancres de carrière** influencent vos choix professionnels selon vos valeurs, compétences et motivations profondes.
-            Ce test vous aidera à identifier ce qui vous motive réellement dans votre carrière.
-
-            Le test comprend **45 propositions**, avec une échelle de 1 à 4 pour chaque :
+            Les **ancres de carrière** influencent vos choix professionnels en fonction de vos valeurs, vos compétences et vos aspirations. Ce test vous aidera à identfier ce qui vous motive vraiment dans votre carrière.
+            Il comprend 45 propositions à évaluer sur une échelle de 1 à 5 :
             - **1** : Pas du tout d’accord
             - **2** : Plutôt pas d’accord
-            - **3** : Plutôt d’accord
-            - **4** : Tout à fait d’accord
+            - **3** : Ni d’accord ni pas d’accord
+            - **4** : Plutôt d’accord
+            - **5** : Tout à fait d’accord
+
+            Il n’y a pas de bonnes ou de mauvaises réponses. L’important est de répondre avec honnêteté et de manière intuitive 😊.
+
         """)
-
-        st.write("Vous souhaitez découvrir ce qui vous motive vraiment ? Installez-vous confortablement ☕️ et cliquez ci-dessous pour débuter le test.")
-
-
-        # st.write("Vous souhaitez découvrir ce qui vous motive vraiment ? Installez-vous confortablement ☕️ et cliquez ci-dessous pour débuter le test.")
-
-        # if st.button("Commencer le test", type="primary"):
-        #     st.session_state.test_started = True
-        #     st.rerun()
 
     # Afficher l'image dans la deuxième colonne
     with col2:
         st.image("image.jpg", use_column_width=True)  # Ajuste l'image à la largeur de la colonne
 
+    st.write("""
+        Installez-vous confortablement ☕️ et cliquez ci-dessous pour débuter le test.""")
+
     if st.button("Commencer le test", type="primary"):
         st.session_state.test_started = True
         st.rerun()
 
+    st.divider()
+    st.write("*Adapté de Schein, E. H. (1990). Career Anchors: Discovering Your Real Values. Pfeiffer & Company, San Diego, California, et mis à jour avec l'ancre internationale par Jean-Luc Cerdin.*")
 
 def display_questionnaire(propositions):
     # Afficher la progression du test
@@ -127,9 +165,9 @@ def display_questionnaire(propositions):
         # Créer le bouton radio avec l'index approprié
         response = st.radio(
             "Choisissez une réponse",
-            [1, 2, 3, 4],
+            [1, 2, 3, 4,5],
             index=response_index,
-            format_func=lambda x: ["Pas du tout d’accord", "Plutôt pas d’accord", "Plutôt d’accord", "Tout à fait d’accord"][x - 1],
+            format_func=lambda x: ["1: Pas du tout d’accord", "2: Plutôt pas d’accord", "3: Ni d’accord ni pas d’accord","4: Plutôt d’accord", "5: Tout à fait d’accord"][x - 1],
             key=f"radio_{st.session_state.current_proposition}"  # Clé unique pour chaque question
         )
 
@@ -141,7 +179,7 @@ def display_questionnaire(propositions):
             next = st.form_submit_button("Suiv.", type="primary")
 
         # Enregistrer la réponse pour la question actuelle
-        if response in [1, 2, 3, 4]:
+        if response in [1, 2, 3, 4, 5]:
             st.session_state[f"response_{st.session_state.current_proposition}"] = response
 
     # Mettre à jour la liste des réponses pour l'analyse des résultats
@@ -158,14 +196,6 @@ def display_questionnaire(propositions):
         else:
             st.session_state.show_results_button = True
             st.rerun()
-
-
-
-
-
-
-
-
 
 
 # Afficher la sélection des propositions les plus élevées
@@ -196,7 +226,8 @@ def display_results():
     scores_df = display_sorted_results(scores)
 
     # Conteneur avec bordures pour le bloc des ancres de carrière
-    with st.expander("Comprendre vos ancres de carrière"):
+    with st.container(border=True):
+        st.subheader("Comprendre vos ancres de carrière")
         # st.subheader("Comprendre vos ancres de carrière")
         st.write("""
             Les ancres de carrière reflètent les motivations et les valeurs profondes qui guident vos choix professionnels.
@@ -205,20 +236,20 @@ def display_results():
 
         # Structure et descriptions des ancres
         rows = [
-            ["TECH", "MG", "AUT"],
-            ["SEC", "CRE", "DEF"],
-            ["CAU", "VIE", "INTER"]
+            ["technique", "managériale", "autonomie"],
+            ["sécurité", "créativité", "défi"],
+            ["dévouement", "style de vie", "internationale"]
         ]
         descriptions = {
-            "TECH": "**L’ancre technique**. Votre carrière s’organise autour d’un métier spécifique. Vous souhaitez devenir un expert dans votre domaine et acquérir sans cesse de nouvelles compétences pour vous perfectionner.",
-            "MG": "**L’ancre managériale**. Votre carrière est orientée vers les postes de direction. Vous envisagez de changer de poste régulièrement pour franchir les étapes et vous rapprocher du sommet de la hiérarchie.",
-            "AUT": "**L’ancre autonomie**. Votre carrière repose sur un besoin d’indépendance et d’autonomie. Vous cherchez avant tout à être libre dans vos décisions professionnelles et pourriez même quitter votre entreprise pour vous concentrer sur des projets personnels.",
-            "SEC": "**L’ancre sécurité-stabilité**. Votre carrière est orientée vers une zone de confort. Vous êtes peu susceptible d’accepter un changement de poste ou une mobilité géographique.",
-            "CRE": "**L’ancre créativité**. Votre carrière est fondée avant tout sur le besoin de créer. Vous préférez vous tourner vers des entreprises innovantes et pourriez envisager de lancer votre propre activité.",
-            "CAU": "**L’ancre dévouement**. Votre carrière s’oriente vers une activité perçue comme une cause, par exemple travailler pour une entreprise alignée avec vos centres d’intérêt.",
-            "DEF": "**L’ancre défi**. Votre carrière est définie par la nécessité de vous confronter à des obstacles pour les dépasser, comme partir à l’étranger ou changer de secteur.",
-            "VIE": "**L’ancre style de vie**. Votre carrière est centrée sur la recherche de la qualité de vie. L’équilibre entre vie privée et vie professionnelle est primordial pour vous.",
-            "INTER": "**L’ancre internationale**. Votre carrière est tournée vers la mobilité à l’international, plaçant l’étranger et la découverte de nouvelles cultures au cœur de votre projet professionnel."
+            "technique": "**L’ancre technique**. Votre carrière s’organise autour d’un métier spécifique. Vous souhaitez devenir un expert dans votre domaine et acquérir sans cesse de nouvelles compétences pour vous perfectionner.",
+            "managériale": "**L’ancre managériale**. Votre carrière est orientée vers les postes de direction. Vous envisagez de changer de poste régulièrement pour franchir les étapes et vous rapprocher du sommet de la hiérarchie.",
+            "autonomie": "**L’ancre autonomie**. Votre carrière repose sur un besoin d’indépendance et d’autonomie. Vous cherchez avant tout à être libre dans vos décisions professionnelles et pourriez même quitter votre entreprise pour vous concentrer sur des projets personnels.",
+            "sécurité": "**L’ancre sécurité-stabilité**. Votre carrière est orientée vers une zone de confort. Vous êtes peu susceptible d’accepter un changement de poste ou une mobilité géographique.",
+            "créativité": "**L’ancre créativité**. Votre carrière est fondée avant tout sur le besoin de créer. Vous préférez vous tourner vers des entreprises innovantes et pourriez envisager de lancer votre propre activité.",
+            "dévouement": "**L’ancre dévouement**. Votre carrière s’oriente vers une activité perçue comme une cause, par exemple travailler pour une entreprise alignée avec vos centres d’intérêt.",
+            "défi": "**L’ancre défi**. Votre carrière est définie par la nécessité de vous confronter à des obstacles pour les dépasser, comme partir à l’étranger ou changer de secteur.",
+            "style de vie": "**L’ancre style de vie**. Votre carrière est centrée sur la recherche de la qualité de vie. L’équilibre entre vie privée et vie professionnelle est primordial pour vous.",
+            "internationale": "**L’ancre internationale**. Votre carrière est tournée vers la mobilité à l’international, plaçant l’étranger et la découverte de nouvelles cultures au cœur de votre projet professionnel."
             }
 
         for row in rows:
@@ -248,6 +279,7 @@ def display_results():
         img_buffer.seek(0)
         st.download_button(
             label="Télécharger l'image",
+            type="primary",
             data=img_buffer,
             file_name="resultats_ancres_de_carriere_seaborn.png",
             mime="image/png"
@@ -256,12 +288,13 @@ def display_results():
         csv = scores_df.to_csv(index=False).encode('utf-8')
         st.download_button(
             label="Télécharger les scores",
+            type="primary",
             data=csv,
             file_name="resultats_ancres_de_carriere.csv",
             mime="text/csv"
         )
     with col3:
-        if st.button("Recommencer le test"):
+        if st.button("Recommencer le test",type="primary"):
             st.session_state.current_proposition = 0
             st.session_state.responses = [None] * len(propositions)
             st.session_state.show_results_button = False
