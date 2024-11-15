@@ -33,9 +33,9 @@ career_anchors = {
     "technique": [1, 10, 19, 28, 37],
     "managériale": [2, 11, 20, 29, 38],
     "autonomie": [3, 12, 21, 30, 39],
-    "sécurité-stabilité": [4, 13, 22, 31, 40],
+    "sécurité": [4, 13, 22, 31, 40],
     "créativité": [5, 14, 23, 32, 41],
-    "dévouement": [6, 15, 24, 33, 42],
+    "cause": [6, 15, 24, 33, 42],
     "défi": [7, 16, 25, 34, 43],
     "style de vie": [8, 17, 26, 35, 44],
     "internationale": [9, 18, 27, 36, 45],
@@ -238,18 +238,18 @@ def display_results():
         rows = [
             ["technique", "managériale", "autonomie"],
             ["sécurité", "créativité", "défi"],
-            ["dévouement", "style de vie", "internationale"]
+            ["cause", "style de vie", "internationale"]
         ]
         descriptions = {
-            "technique": "**L’ancre technique**. Votre carrière s’organise autour d’un métier spécifique. Vous souhaitez devenir un expert dans votre domaine et acquérir sans cesse de nouvelles compétences pour vous perfectionner.",
-            "managériale": "**L’ancre managériale**. Votre carrière est orientée vers les postes de direction. Vous envisagez de changer de poste régulièrement pour franchir les étapes et vous rapprocher du sommet de la hiérarchie.",
-            "autonomie": "**L’ancre autonomie**. Votre carrière repose sur un besoin d’indépendance et d’autonomie. Vous cherchez avant tout à être libre dans vos décisions professionnelles et pourriez même quitter votre entreprise pour vous concentrer sur des projets personnels.",
-            "sécurité": "**L’ancre sécurité-stabilité**. Votre carrière est orientée vers une zone de confort. Vous êtes peu susceptible d’accepter un changement de poste ou une mobilité géographique.",
-            "créativité": "**L’ancre créativité**. Votre carrière est fondée avant tout sur le besoin de créer. Vous préférez vous tourner vers des entreprises innovantes et pourriez envisager de lancer votre propre activité.",
-            "dévouement": "**L’ancre dévouement**. Votre carrière s’oriente vers une activité perçue comme une cause, par exemple travailler pour une entreprise alignée avec vos centres d’intérêt.",
-            "défi": "**L’ancre défi**. Votre carrière est définie par la nécessité de vous confronter à des obstacles pour les dépasser, comme partir à l’étranger ou changer de secteur.",
-            "style de vie": "**L’ancre style de vie**. Votre carrière est centrée sur la recherche de la qualité de vie. L’équilibre entre vie privée et vie professionnelle est primordial pour vous.",
-            "internationale": "**L’ancre internationale**. Votre carrière est tournée vers la mobilité à l’international, plaçant l’étranger et la découverte de nouvelles cultures au cœur de votre projet professionnel."
+            "technique": "L’ancre **technique**. Il est important pour vous que votre carrière s’organise autour d’un domaine spécifique. Vous attachez de la valeur à devenir un expert dans votre domaine et à acquérir régulièrement de nouvelles compétences pour affiner et enrichir votre savoir-faire.",
+            "managériale": "L’ancre **managériale**. Il est important pour vous que votre carrière soit orientée vers des postes de direction. Vous êtes motivé par l’idée de changer de poste régulièrement afin de progresser et de vous rapprocher des plus hauts niveaux de la hiérarchie.",
+            "autonomie": "L’ancre **autonomie**. Il est important pour vous que votre carrière vous offre indépendance et autonomie. Vous recherchez avant tout la liberté dans vos décisions professionnelles et pourriez même envisager de quitter votre entreprise pour vous consacrer à vos propres projets professionnels.",
+            "sécurité": "L’ancre **sécurité**-stabilité. Il est important pour vous d’évoluer dans une zone de confort professionnelle. Un changement de poste ou une mobilité géographique est susceptible de vous demander un véritable effort, car vous privilégiez la stabilité dans votre carrière.",
+            "créativité": "L’ancre **créativité**. Il est essentiel pour vous que votre carrière soit fondée avant tout sur le besoin de créer. Vous privilégiez les environnements innovants et êtes motivé par l’idée de lancer, éventuellement, votre propre activité.",
+            "cause": "L’ancre dévouement à une **cause**. Il est important pour vous que votre carrière s’oriente vers une activité que vous percevez comme une cause. Vous privilégiez, par exemple, de travailler pour une organisation alignée avec vos centres d’intérêt et vos valeurs.",
+            "défi":"L’ancre **défi**. Il est important pour vous que votre carrière vous offre l'opportunité de vous confronter à des obstacles pour les dépasser. Vous êtes motivé par des défis tels que partir à l’étranger ou changer de secteur pour repousser vos limites.",
+            "style de vie":"L’ancre **style de vie**. Il est essentiel pour vous que votre carrière soit centrée sur la recherche de la qualité de vie, avec un équilibre entre vie privée et vie professionnelle qui reste pour vous une priorité.",
+            "internationale":"L’ancre **internationale**. Il est important pour vous que votre carrière vous offre des opportunités de mobilité à l’international ou s’adapte à une mobilité fréquente. L’étranger et la découverte de nouvelles cultures sont au cœur de votre projet professionnel ou doivent y être intégrés."
             }
 
         for row in rows:
@@ -274,16 +274,46 @@ def display_results():
     # Options de téléchargement des résultats
     col1, col2, col3 = st.columns(3)
     with col1:
+        # img_buffer = BytesIO()
+        # plt.savefig(img_buffer, format="png", bbox_inches="tight")
+        # img_buffer.seek(0)
+        # st.download_button(
+        #     label="Télécharger l'image",
+        #     type="primary",
+        #     data=img_buffer,
+        #     file_name="resultats_ancres_de_carriere_seaborn.png",
+        #     mime="image/png"
+        # )
+                # Télécharger le graphique en tant qu'image Plotly
         img_buffer = BytesIO()
-        plt.savefig(img_buffer, format="png", bbox_inches="tight")
+        fig = px.bar(
+            scores_df,
+            x="Score",
+            y="Ancre",
+            orientation='h',
+            color="Score",
+            color_continuous_scale="Blugrn",
+        )
+        # Personnaliser le style du graphique pour masquer les éléments non désirés
+        fig.update_layout(
+        showlegend=False,               # Masquer la légende
+        xaxis_title=None,               # Masquer le titre de l'axe des scores
+        yaxis_title=None,               # Masquer le titre de l'axe des ancres
+        coloraxis_showscale=False,
+        yaxis=dict(categoryorder="total ascending"),  # Trier les ancres par score
+        template="plotly_white"
+        )
+        fig.write_image(img_buffer, format="png")
         img_buffer.seek(0)
         st.download_button(
-            label="Télécharger l'image",
             type="primary",
+            label="Télécharger l'image",
             data=img_buffer,
-            file_name="resultats_ancres_de_carriere_seaborn.png",
-            mime="image/png"
+            file_name="mes_resultats_ancres_de_carriere.png",
+            mime="image/png",
         )
+
+
     with col2:
         csv = scores_df.to_csv(index=False).encode('utf-8')
         st.download_button(
