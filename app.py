@@ -68,39 +68,73 @@ def calculate_scores(selected_propositions=None):
 #     return scores_df
 
 
-# Afficher les résultats sous forme de graphique classé avec Plotly
-import plotly.express as px
 
 # Afficher les résultats sous forme de graphique classé avec Plotly et palette de test de personnalité
+# def display_sorted_results(scores):
+#     # Trier les scores
+#     sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+#     scores_df = pd.DataFrame(sorted_scores, columns=["Ancre", "Score"])
+
+#     # Créer le graphique barplot avec Plotly et appliquer un dégradé de couleur basé sur le score
+#     fig = px.bar(
+#         scores_df,
+#         x="Score",
+#         y="Ancre",
+#         orientation='h',
+#         color="Score",  # Utiliser la colonne Score pour générer le dégradé
+#         color_continuous_scale="Blugrn",  # Utiliser un dégradé de couleurs
+#     )
+
+#     # Personnaliser le style du graphique pour masquer les éléments non désirés
+#     fig.update_layout(
+#         showlegend=False,               # Masquer la légende
+#         xaxis_title=None,               # Masquer le titre de l'axe des scores
+#         yaxis_title=None,               # Masquer le titre de l'axe des ancres
+#         coloraxis_showscale=False,
+#         yaxis=dict(categoryorder="total ascending"),  # Trier les ancres par score
+#         template="plotly_white"
+#     )
+
+#     # Afficher le graphique dans Streamlit
+#     st.plotly_chart(fig)
+
+#     return scores_df
+
 def display_sorted_results(scores):
     # Trier les scores
     sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
     scores_df = pd.DataFrame(sorted_scores, columns=["Ancre", "Score"])
 
-    # Créer le graphique barplot avec Plotly et appliquer un dégradé de couleur basé sur le score
-    fig = px.bar(
-        scores_df,
+    # Créer le graphique barplot avec Seaborn
+    plt.figure(figsize=(10, 6))
+    sns.barplot(
         x="Score",
         y="Ancre",
-        orientation='h',
-        color="Score",  # Utiliser la colonne Score pour générer le dégradé
-        color_continuous_scale="Blugrn",  # Utiliser un dégradé de couleurs
+        data=scores_df,
+        palette="crest"
     )
 
-    # Personnaliser le style du graphique pour masquer les éléments non désirés
-    fig.update_layout(
-        showlegend=False,               # Masquer la légende
-        xaxis_title=None,               # Masquer le titre de l'axe des scores
-        yaxis_title=None,               # Masquer le titre de l'axe des ancres
-        coloraxis_showscale=False,
-        yaxis=dict(categoryorder="total ascending"),  # Trier les ancres par score
-        template="plotly_white"
-    )
+    # Ajouter des labels et améliorer l'apparence
+    plt.xlabel("Score", fontsize=12)
+    plt.title("Vos scores par ancres de Carrière", fontsize=14)
+    plt.tight_layout()
 
     # Afficher le graphique dans Streamlit
-    st.plotly_chart(fig)
+    st.pyplot(plt)
+
+    # # Permettre le téléchargement de l'image
+    # img_buffer = BytesIO()
+    # plt.savefig(img_buffer, format="png")
+    # img_buffer.seek(0)
+    # st.download_button(
+    #     label="Télécharger le graphique",
+    #     data=img_buffer,
+    #     file_name="resultats_ancres_de_carriere.png",
+    #     mime="image/png",
+    # )
 
     return scores_df
+
 
 
 
@@ -272,45 +306,76 @@ def display_results():
 
 
     # Options de téléchargement des résultats
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3  = st.columns(3)
+    # with col1:
+    #     # img_buffer = BytesIO()
+    #     # plt.savefig(img_buffer, format="png", bbox_inches="tight")
+    #     # img_buffer.seek(0)
+    #     # st.download_button(
+    #     #     label="Télécharger l'image",
+    #     #     type="primary",
+    #     #     data=img_buffer,
+    #     #     file_name="resultats_ancres_de_carriere_seaborn.png",
+    #     #     mime="image/png"
+    #     # )
+    #             # Télécharger le graphique en tant qu'image Plotly
+    #     img_buffer = BytesIO()
+    #     fig = px.bar(
+    #         scores_df,
+    #         x="Score",
+    #         y="Ancre",
+    #         orientation='h',
+    #         color="Score",
+    #         color_continuous_scale="Blugrn",
+    #     )
+    #     # Personnaliser le style du graphique pour masquer les éléments non désirés
+    #     fig.update_layout(
+    #     showlegend=False,               # Masquer la légende
+    #     xaxis_title=None,               # Masquer le titre de l'axe des scores
+    #     yaxis_title=None,               # Masquer le titre de l'axe des ancres
+    #     coloraxis_showscale=False,
+    #     yaxis=dict(categoryorder="total ascending"),  # Trier les ancres par score
+    #     template="plotly_white"
+    #     )
+    #     fig.write_image(img_buffer, format="png")
+    #     img_buffer.seek(0)
+    #     st.download_button(
+    #         type="primary",
+    #         label="Télécharger l'image",
+    #         data=img_buffer,
+    #         file_name="mes_resultats_ancres_de_carriere.png",
+    #         mime="image/png",
+    #     )
+
     with col1:
-        # img_buffer = BytesIO()
-        # plt.savefig(img_buffer, format="png", bbox_inches="tight")
-        # img_buffer.seek(0)
-        # st.download_button(
-        #     label="Télécharger l'image",
-        #     type="primary",
-        #     data=img_buffer,
-        #     file_name="resultats_ancres_de_carriere_seaborn.png",
-        #     mime="image/png"
-        # )
-                # Télécharger le graphique en tant qu'image Plotly
-        img_buffer = BytesIO()
-        fig = px.bar(
-            scores_df,
+        sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        scores_df = pd.DataFrame(sorted_scores, columns=["Ancre", "Score"])
+
+        # Créer le graphique barplot avec Seaborn
+        plt.figure(figsize=(10, 6))
+        sns.barplot(
             x="Score",
             y="Ancre",
-            orientation='h',
-            color="Score",
-            color_continuous_scale="Blugrn",
+            data=scores_df,
+            palette="crest"
         )
-        # Personnaliser le style du graphique pour masquer les éléments non désirés
-        fig.update_layout(
-        showlegend=False,               # Masquer la légende
-        xaxis_title=None,               # Masquer le titre de l'axe des scores
-        yaxis_title=None,               # Masquer le titre de l'axe des ancres
-        coloraxis_showscale=False,
-        yaxis=dict(categoryorder="total ascending"),  # Trier les ancres par score
-        template="plotly_white"
-        )
-        fig.write_image(img_buffer, format="png")
+
+        # Ajouter des labels et améliorer l'apparence
+        plt.xlabel("Score", fontsize=12)
+        plt.title("Vos scores par ancres de carrière", fontsize=14)
+        plt.tight_layout()
+
+
+        # Permettre le téléchargement de l'image
+        img_buffer = BytesIO()
+        plt.savefig(img_buffer, format="png")
         img_buffer.seek(0)
         st.download_button(
-            type="primary",
             label="Télécharger l'image",
             data=img_buffer,
-            file_name="mes_resultats_ancres_de_carriere.png",
+            file_name="resultats_ancres_de_carriere.png",
             mime="image/png",
+            type="primary"
         )
 
 
